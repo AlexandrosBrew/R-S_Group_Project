@@ -1,0 +1,16 @@
+Launch gazebo with - 
+ros2 launch gazebo_ros gazebo.launch.py
+
+Spawn Robots with e.g. - 
+ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
+
+Sourcing - 
+source ~/ros2_ws/install/setup.bash
+
+Rebuilding - 
+cd ~/ros2_ws
+colcon build --packages-select GazeboRobotSim
+source install/setup.bash
+
+Running Scripts -
+ros2 run GazeboRobotSim move_robot
