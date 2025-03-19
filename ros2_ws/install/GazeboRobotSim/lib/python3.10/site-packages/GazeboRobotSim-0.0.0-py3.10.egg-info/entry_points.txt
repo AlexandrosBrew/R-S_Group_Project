@@ -1,0 +1,4 @@
+[console_scripts]
+move_robot = GazeboRobotSim.move_robot:main
+test_gazebo = GazeboRobotSim.test_gazebo:main
+
