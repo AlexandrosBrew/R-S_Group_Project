@@ -14,3 +14,6 @@ source install/setup.bash
 
 Running Scripts -
 ros2 run GazeboRobotSim move_robot
+
+Running the world -
+ros2 launch GazeboRobotSim launch.py
