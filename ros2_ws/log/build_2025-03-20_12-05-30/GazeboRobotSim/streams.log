@@ -1,0 +1,17 @@
+[0.432s] Invoking command in '/home/dimithri/ros2_ws/src/GazeboRobotSim': PYTHONPATH=/home/dimithri/ros2_ws/build/GazeboRobotSim/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/dimithri/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/GazeboRobotSim build --build-base /home/dimithri/ros2_ws/build/GazeboRobotSim/build install --record /home/dimithri/ros2_ws/build/GazeboRobotSim/install.log --single-version-externally-managed install_data
+[0.589s] running egg_info
+[0.589s] writing ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/PKG-INFO
+[0.589s] writing dependency_links to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/dependency_links.txt
+[0.590s] writing entry points to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/entry_points.txt
+[0.590s] writing requirements to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/requires.txt
+[0.590s] writing top-level names to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/top_level.txt
+[0.591s] reading manifest file '../../build/GazeboRobotSim/GazeboRobotSim.egg-info/SOURCES.txt'
+[0.592s] writing manifest file '../../build/GazeboRobotSim/GazeboRobotSim.egg-info/SOURCES.txt'
+[0.592s] running build
+[0.592s] running build_py
+[0.592s] running install
+[0.592s] running install_lib
+[0.593s] running install_data
+[0.593s] copying launch/test.launch.pyZone.Identifier -> /home/dimithri/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/launch
+[0.593s] error: can't copy 'launch/Task 1': doesn't exist or not a regular file
+[0.610s] Invoked command in '/home/dimithri/ros2_ws/src/GazeboRobotSim' returned '1': PYTHONPATH=/home/dimithri/ros2_ws/build/GazeboRobotSim/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/dimithri/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/GazeboRobotSim build --build-base /home/dimithri/ros2_ws/build/GazeboRobotSim/build install --record /home/dimithri/ros2_ws/build/GazeboRobotSim/install.log --single-version-externally-managed install_data

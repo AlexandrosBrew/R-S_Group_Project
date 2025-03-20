@@ -13,6 +13,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),  # Ensure launch files are installed
         (os.path.join('share', package_name, 'models'), glob('models/*.sdf')),  # Ensure model files are installed
+        (os.path.join('share', package_name, 'models'), glob('models/*.config')),  # Ensure model config files are installed
         (os.path.join('share', package_name, 'scripts'), glob('scripts/*.py')),  # Ensure script files are installed
         (os.path.join('share', package_name, 'worlds'), glob('worlds/*.world')),  # Ensure script files are installed
     ],
