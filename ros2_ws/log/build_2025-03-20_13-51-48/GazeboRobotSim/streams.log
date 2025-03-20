@@ -1,0 +1,23 @@
+[1.080s] Invoking command in '/home/dimithri/ros2_ws/src/GazeboRobotSim': PYTHONPATH=/home/dimithri/ros2_ws/build/GazeboRobotSim/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/dimithri/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/GazeboRobotSim build --build-base /home/dimithri/ros2_ws/build/GazeboRobotSim/build install --record /home/dimithri/ros2_ws/build/GazeboRobotSim/install.log --single-version-externally-managed install_data
+[1.465s] running egg_info
+[1.466s] writing ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/PKG-INFO
+[1.467s] writing dependency_links to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/dependency_links.txt
+[1.467s] writing entry points to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/entry_points.txt
+[1.468s] writing requirements to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/requires.txt
+[1.469s] writing top-level names to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/top_level.txt
+[1.471s] reading manifest file '../../build/GazeboRobotSim/GazeboRobotSim.egg-info/SOURCES.txt'
+[1.475s] writing manifest file '../../build/GazeboRobotSim/GazeboRobotSim.egg-info/SOURCES.txt'
+[1.475s] running build
+[1.475s] running build_py
+[1.476s] running install
+[1.481s] running install_lib
+[1.483s] running install_data
+[1.483s] copying models/robotTask1.sdf -> /home/dimithri/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models
+[1.484s] running install_egg_info
+[1.486s] removing '/home/dimithri/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim-0.0.0-py3.10.egg-info' (and everything under it)
+[1.487s] Copying ../../build/GazeboRobotSim/GazeboRobotSim.egg-info to /home/dimithri/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim-0.0.0-py3.10.egg-info
+[1.488s] running install_scripts
+[1.523s] Installing move_robot script to /home/dimithri/ros2_ws/install/GazeboRobotSim/lib/GazeboRobotSim
+[1.523s] Installing test_gazebo script to /home/dimithri/ros2_ws/install/GazeboRobotSim/lib/GazeboRobotSim
+[1.525s] writing list of installed files to '/home/dimithri/ros2_ws/build/GazeboRobotSim/install.log'
+[1.567s] Invoked command in '/home/dimithri/ros2_ws/src/GazeboRobotSim' returned '0': PYTHONPATH=/home/dimithri/ros2_ws/build/GazeboRobotSim/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/dimithri/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/GazeboRobotSim build --build-base /home/dimithri/ros2_ws/build/GazeboRobotSim/build install --record /home/dimithri/ros2_ws/build/GazeboRobotSim/install.log --single-version-externally-managed install_data

@@ -481,7 +481,37 @@
 	
     <static>0</static>
     <allow_auto_disable>1</allow_auto_disable>
-    <plugin name='gazebo_ros_diff_drive' filename='libgazebo_ros_diff_drive.so'/>
+    <plugin name='gazebo_ros_diff_drive' filename='libgazebo_ros_diff_drive.so'>
+
+
+		<!-- Update rate in Hz -->
+		<update_rate>50</update_rate>
+
+		<!-- wheels -->
+		<left_joint>Left_Wheel_Joint</left_joint>
+		<right_joint>Right_Wheel_Joint</right_joint>
+
+		<!-- kinematics -->
+		<wheel_separation>1.25</wheel_separation>
+		<wheel_diameter>0.6</wheel_diameter>
+
+		<!-- limits -->
+		<max_wheel_torque>20</max_wheel_torque>
+		<max_wheel_acceleration>1.0</max_wheel_acceleration>
+
+		<!-- input -->
+		<command_topic>cmd_vel</command_topic>
+
+		<!-- output -->
+		<publish_odom>true</publish_odom>
+		<publish_odom_tf>true</publish_odom_tf>
+		<publish_wheel_tf>true</publish_wheel_tf>
+
+		<odometry_topic>odom</odometry_topic>
+		<odometry_frame>odom</odometry_frame>
+		<robot_base_frame>link_1</robot_base_frame>
+	</plugin>
+	
 	<include>
 		<uri>model://hokuyo</uri>
 		<pose>0.1005 0.00275 0.04 0 -0 0</pose>
