@@ -2,19 +2,19 @@ Launch gazebo with -
 ros2 launch gazebo_ros gazebo.launch.py
 
 Spawn Robots with e.g. - 
-ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
+ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
 
 ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/Documents/Group\ Project/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
 
 Sourcing - 
-source ~/ros2_ws/install/setup.bash
+source  ~/R-S_Group_Project/ros2_ws/install/setup.bash
 
 Rebuilding - 
-cd ~/ros2_ws
-ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/Documents/Group\ Project/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
+cd ~/R-S_Group_Project/ros2_ws
 colcon build --packages-select GazeboRobotSim
 source install/setup.bash
-ros2 run GazeboRobotSim move_robot
+
+
 Running Scripts -
 ros2 run GazeboRobotSim move_robot
 
@@ -22,7 +22,20 @@ Running the world -
 ros2 launch GazeboRobotSim launch.py
 
 
-ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/Documents/Group\ Project/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
-colcon build --packages-select GazeboRobotSim
-source install/setup.bash
-ros2 run GazeboRobotSim move_robot
+Hokuyo Sensor Settings
+------------------------
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>3</samples>
+              <resolution>1</resolution>
+              <min_angle>-1.5707</min_angle>
+              <max_angle>1.5707</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.08</min>
+            <max>5<max>
+            <resolution>0.01</resolution>
+          </range>
+        </ray>
