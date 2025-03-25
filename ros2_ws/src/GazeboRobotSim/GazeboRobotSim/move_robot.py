@@ -12,8 +12,8 @@ class MoveRobot(Node):
         self.odom_subscription = self.create_subscription(Odometry, '/odom', self.move_forward, 10)
         
     def move_forward(self, msg):       
-        goalx = 1
-        goaly = 1
+        goalx = -1
+        goaly = -1
         movement = Twist()
         
         #Get distance to goal
@@ -33,16 +33,25 @@ class MoveRobot(Node):
         turningSpeed = 0.2
         drivingSpeed = 0.5
 
-        angleAccuracy = 0.5
+        angleAccuracy = 0.1
         distanceAccuracy = 0.1
 
         angleDifference  = abs(yaw - angleToGoal)
 
-        if yaw < (angleToGoal - angleAccuracy) or yaw > (angleToGoal + angleAccuracy):
-            movement.angular.z = float(turningSpeed * angleDifference)
+        currentAngular = 0.0
+
+        if yaw < (angleToGoal - angleAccuracy):
+            movement.angular.z = float(turningSpeed * angleDifference *-1)
+            currentAngular = float(turningSpeed * angleDifference *-1)
             message = "Turning"
+        elif yaw > (angleToGoal + angleAccuracy):
+            movement.angular.z = float(turningSpeed * angleDifference)
+            currentAngular = float(turningSpeed * angleDifference)
+            message = "Turning"
+
         else:
             movement.angular.z = 0.0
+            currentAngular = 0.0
             message = "Aligned"
             if distanceToGoal > distanceAccuracy:
                 movement.linear.x = float(drivingSpeed*distanceToGoal*-1) #Robot moving in reverse as it is facing the wrong way
@@ -51,7 +60,7 @@ class MoveRobot(Node):
                 movement.linear.x = 0.0
                 message = "At Goal"
 
-        self.get_logger().info(f'Current yaw: {yaw} Goal Angle: {angleToGoal} message: {message}') 
+        self.get_logger().info(f'Current yaw: {yaw} Goal Angle: {angleToGoal} message: {message} currentAngular: {currentAngular}') 
         self.publisher.publish(movement)
     
 
