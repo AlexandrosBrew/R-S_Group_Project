@@ -39,3 +39,17 @@ Hokuyo Sensor Settings
             <resolution>0.01</resolution>
           </range>
         </ray>
+        
+        
+<plugin name="laser" filename="libgazebo_ros_ray_sensor.so">
+<output_type>sensor_msgs/LaserScan</output_type>
+<frameName>/hokuyo_link</frameName>
+</plugin>
+
+------------------------
+Setup.py File
+------------------------
+(os.path.join('share/' + package_name, 'scripts'), glob('scripts/*')),
+
+
+
