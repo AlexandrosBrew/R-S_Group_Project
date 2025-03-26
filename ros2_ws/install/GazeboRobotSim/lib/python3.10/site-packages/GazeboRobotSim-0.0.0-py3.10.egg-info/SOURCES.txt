@@ -10,6 +10,7 @@ setup.py
 ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/zip-safe
 GazeboRobotSim/__init__.py
 GazeboRobotSim/move_robot.py
+GazeboRobotSim/move_robot2.py
 GazeboRobotSim/test_gazebo.py
 launch/launch.py
 launch/Task 1/model.config
