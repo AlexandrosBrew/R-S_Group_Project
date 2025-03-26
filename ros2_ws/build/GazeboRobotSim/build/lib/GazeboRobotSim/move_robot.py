@@ -1,111 +1,105 @@
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Pose
-from nav_msgs.msg import Odometry
-from std_msgs.msg import String
 from sensor_msgs.msg import LaserScan
-import math
-import array
+from geometry_msgs.msg import Twist
+from math import atan2, sqrt, pi
 
-class MoveRobot(Node):
+class PathfindingRobot(Node):
     def __init__(self):
-        super().__init__('move_robot')
-        self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
-        self.odom_subscription = self.create_subscription(Odometry, '/odom', self.move_forward, 10)
-        self.laser_subscription = self.create_subscription(LaserScan, '/laser/out', self.laser_callback, 10)
-        self.laser_msg = LaserScan
-        self.obstacle = False
+        super().__init__('pathfinding_robot')
 
-    def laser_callback(self, msg):
-        left_ranges = msg.ranges[0:6]
-        front_ranges = msg.ranges[7:13]
-        right_ranges = msg.ranges[14:20]
+        # Create a subscriber to the Hokuyo laser scan data
+        self.create_subscription(LaserScan, '/laser/out', self.scan_callback, 10)
 
-        right_min_distance = min(right_ranges)
-        left_min_distance = min(left_ranges)
-        front_min_distance = min(front_ranges)
-        distance_threshold = 0.5
-        
-        if front_min_distance < distance_threshold:
-            self.obstacle = True
-            if left_min_distance > right_min_distance:
-                self.turn_left()
-            elif right_min_distance > left_min_distance:
-                self.turn_right()
+        # Publisher to send velocity commands to the robot
+        self.velocity_publisher = self.create_publisher(Twist, '/cmd_vel', 10)
+
+        # Initialize movement
+        self.cmd_vel = Twist()
+
+        # Define the goal position (goal_x, goal_y) in robot's local frame (in meters)
+        self.goal_x = 5.0  # Example goal x position
+        self.goal_y = 5.0  # Example goal y position
+
+        # Assume the robot's initial position and orientation (for simulation purposes)
+        self.robot_x = 0.0
+        self.robot_y = 0.0
+        self.robot_theta = 0.0  # Robot's orientation in radians (0 means facing the positive x-axis)
+
+    def scan_callback(self, msg):
+        # Extract laser scan data
+        laser_data = msg.ranges
+
+        # Define important indices for the laser data (left, center, right)
+        left_range = laser_data[20]  # Left side of the robot
+        center_range = laser_data[len(laser_data) // 2]  # Center of the robot
+        right_range = laser_data[-20]  # Right side of the robot
+
+        # Define the minimum safe distance to avoid collisions
+        min_safe_distance = 1.0
+
+        # Proportional control constants
+        k_linear = 0.5  # Speed scaling factor
+        k_angular = 2.0  # Turning scaling factor
+
+        # Proportional collision avoidance logic
+        if center_range < min_safe_distance:
+            # There is an obstacle in front, calculate the turn direction based on side readings
+            if left_range > right_range:
+                # More space on the left, turn left
+                self.cmd_vel.linear.x = 0.0
+                self.cmd_vel.angular.z = k_angular * (1.0 - left_range / min_safe_distance)
+            else:
+                # More space on the right, turn right
+                self.cmd_vel.linear.x = 0.0
+                self.cmd_vel.angular.z = -k_angular * (1.0 - right_range / min_safe_distance)
         else:
-            self.obstacle = False
-    
-    def turn_left(self):
-        # Turn left by setting a positive angular velocity
-        movement = Twist()
-        movement.angular.z = 0.5  # Turn counterclockwise
-        self.publisher.publish(movement)
-        self.get_logger().info("Obstacle detected! Turning left.")
+            # No obstacle in front, move forward with proportional control
+            self.cmd_vel.linear.x = k_linear * (center_range / min_safe_distance)  # Go forward faster if no obstacles
+            self.cmd_vel.angular.z = 0.0  # Move straight
 
-    def turn_right(self):
-        # Turn right by setting a negative angular velocity
-        movement = Twist()
-        movement.angular.z = -0.5  # Turn clockwise
-        self.publisher.publish(movement)
-        self.get_logger().info("Obstacle detected! Turning right.")
+        # Move towards the goal if there are no obstacles
+        self.move_towards_goal()
 
-    def move_forward(self, msg):       
-        goalx = 0
-        goaly = 2
-        movement = Twist()
-        
-        #Get distance to goal
-        distanceToGoal = math.sqrt( (goalx - msg.pose.pose.position.x)**2 + (goaly - msg.pose.pose.position.y)**2)
-        
-        #Get angle to goal
-        angleToGoal = math.atan2( goaly - msg.pose.pose.position.y , goalx - msg.pose.pose.position.x)        
+        # Publish the velocity command
+        self.velocity_publisher.publish(self.cmd_vel)
 
-        orientation = msg.pose.pose.orientation
-        yaw = math.atan2(2.0 * (orientation.w*orientation.z + orientation.x*orientation.y), 1.0 - 2.0 * (orientation.y*orientation.y + orientation.z*orientation.z)) #Get yaw angle from quaternion
-        #Adjust yaw and angleToGoal angles to be between 0 and 2pi
-        yaw += math.pi
-        angleToGoal += math.pi
+    def move_towards_goal(self):
+        # Here we use a simple proportional control approach to reach the goal.
 
-        #Movement Parameters
-        turningSpeed = 0.2
-        drivingSpeed = 1
+        # Calculate the distance and angle to the goal
+        delta_x = self.goal_x - self.robot_x
+        delta_y = self.goal_y - self.robot_y
+        distance_to_goal = sqrt(delta_x**2 + delta_y**2)
+        angle_to_goal = atan2(delta_y, delta_x)
 
-        angleAccuracy = 0.1
-        distanceAccuracy = 0.1
+        # Normalize angle_to_goal to be within [-pi, pi]
+        angle_to_goal = (angle_to_goal - self.robot_theta + pi) % (2 * pi) - pi
 
-        angleDifference  = abs(yaw - angleToGoal)
+        # Proportional control for linear speed (move faster if closer to the goal)
+        k_linear = 0.5  # Speed scaling factor
+        self.cmd_vel.linear.x = k_linear * distance_to_goal
 
-        currentAngular = 0.0
-        if not self.obstacle:
-            if yaw < (angleToGoal - angleAccuracy):
-                movement.angular.z = float(turningSpeed * angleDifference *-1)
-                currentAngular = float(turningSpeed * angleDifference *-1)
+        # Proportional control for angular speed (adjust orientation to face the goal)
+        k_angular = 2.0  # Turning scaling factor
+        self.cmd_vel.angular.z = k_angular * angle_to_goal
 
-                message = "Turning"
-            elif yaw > (angleToGoal + angleAccuracy):
-                movement.angular.z = float(turningSpeed * angleDifference)
-                currentAngular = float(turningSpeed * angleDifference)
-                message = "Turning"
+        # If the robot is close to the goal, stop moving
+        if distance_to_goal < 0.1:
+            self.cmd_vel.linear.x = 0.0
+            self.cmd_vel.angular.z = 0.0
 
-            else:
-                movement.angular.z = 0.0
-                currentAngular = 0.0
-                message = "Aligned"
+        # Update robot's pose based on the movement (for simulation purposes)
+        self.robot_x += self.cmd_vel.linear.x * 0.1  # Assuming a time step of 0.1s
+        self.robot_y += 0.0  # We assume no lateral movement
+        self.robot_theta += self.cmd_vel.angular.z * 0.1  # Update robot's orientation
 
-            if distanceToGoal > distanceAccuracy:
-                movement.linear.x = float(drivingSpeed*distanceToGoal*-1) #Robot moving in reverse as it is facing the wrong way
-            else:
-                movement.linear.x = 0.0
-                message = "At Goal"
-            #self.get_logger().info(f'Current yaw: {yaw} Goal Angle: {angleToGoal} message: {message} currentAngular: {currentAngular}') 
-            self.publisher.publish(movement)
-    
+        # Ensure the robot's theta is within [-pi, pi]
+        self.robot_theta = (self.robot_theta + pi) % (2 * pi) - pi
 
-
-def main():
-    rclpy.init()
-    node = MoveRobot()
+def main(args=None):
+    rclpy.init(args=args)
+    node = PathfindingRobot()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
