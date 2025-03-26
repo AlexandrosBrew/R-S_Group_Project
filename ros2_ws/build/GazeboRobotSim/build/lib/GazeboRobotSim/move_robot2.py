@@ -21,6 +21,7 @@ class MoveRobot(Node):
 
         self.state = "Deciding"
         self.chosenDirection = []
+        self.positionsVisited = []
         self.movementDistance = 0.3
 
         self.movementGoalY = 0
@@ -59,25 +60,41 @@ class MoveRobot(Node):
             distanceToGoalLeft = math.sqrt( (goalx - (self.odom_msg.pose.pose.position.x - self.movementDistance))**2 + (goaly - self.odom_msg.pose.pose.position.y)**2) 
             distanceToGoalRight = math.sqrt( (goalx - (self.odom_msg.pose.pose.position.x + self.movementDistance))**2 + (goaly - self.odom_msg.pose.pose.position.y)**2)
             distanceToGoalFront = math.sqrt( (goalx - self.odom_msg.pose.pose.position.x)**2 + (goaly - self.odom_msg.pose.pose.position.y + self.movementDistance)**2)
+            distanceToGoalBack = math.sqrt( (goalx - self.odom_msg.pose.pose.position.x)**2 + (goaly - self.odom_msg.pose.pose.position.y - self.movementDistance)**2)
+
+            #Get Resultant Position
+            leftPosition = [self.odom_msg.pose.pose.position.x - self.movementDistance, self.odom_msg.pose.pose.position.y]
+            frontPosition = [self.odom_msg.pose.pose.position.x, self.odom_msg.pose.pose.position.y + self.movementDistance]
+            rightPosition = [self.odom_msg.pose.pose.position.x + self.movementDistance, self.odom_msg.pose.pose.position.y]
+            backPosition = [self.odom_msg.pose.pose.position.x, self.odom_msg.pose.pose.position.y - self.movementDistance]
             
             directions = [
-                ["Left", distanceToGoalLeft, leftSensorMin],
-                ["Front", distanceToGoalFront, frontSensorMin],
-                ["Right", distanceToGoalRight, rightSensorMin]
+                ["Left", distanceToGoalLeft, leftSensorMin, leftPosition],
+                ["Front", distanceToGoalFront, frontSensorMin, frontPosition],
+                ["Right", distanceToGoalRight, rightSensorMin, rightPosition]
             ]
 
-            smallestDistance = 0
-            self.chosenDirection = directions[0] #Default to left
+            smallestDistance = 999
+            self.chosenDirection = []
             for direction in directions:
-                if direction[2] > self.movementDistance and direction[1] > smallestDistance:
-                    smallestDistance = direction[1]
-                    self.chosenDirection = direction
+                
+                distanceToGoal = direction[1]
+                distanceToObstacle = direction[2]
+                position = direction[3]
 
+                if distanceToObstacle > self.movementDistance + 0.2 and distanceToGoal < smallestDistance and not self.checkPreviousPositions(position):
+                    smallestDistance = distanceToGoal
+                    self.chosenDirection = direction
+            
+            if self.chosenDirection == []:
+                self.chosenDirection = ["Back", distanceToGoalBack, 99, backPosition]
+
+            self.get_logger().info(f"Chosen Direction: {self.chosenDirection[0]} Distance to Goal: {self.chosenDirection[1]} Distance to Obstacle: {self.chosenDirection[2]}")
 
             if self.chosenDirection[0] == "Left":
                 self.movementGoalX = self.odom_msg.pose.pose.position.x - self.movementDistance
                 self.movementGoalY = self.odom_msg.pose.pose.position.y
-            
+
             elif self.chosenDirection[0] == "Front":
                 self.movementGoalX = self.odom_msg.pose.pose.position.x
                 self.movementGoalY = self.odom_msg.pose.pose.position.y + self.movementDistance
@@ -85,6 +102,12 @@ class MoveRobot(Node):
             elif self.chosenDirection[0] == "Right":
                 self.movementGoalX = self.odom_msg.pose.pose.position.x + self.movementDistance
                 self.movementGoalY = self.odom_msg.pose.pose.position.y
+            
+            elif self.chosenDirection[0] == "Back":
+                self.movementGoalX = self.odom_msg.pose.pose.position.x
+                self.movementGoalY = self.odom_msg.pose.pose.position.y - self.movementDistance
+            
+            self.positionsVisited.append([self.movementGoalX, self.movementGoalY])
 
             self.state = "Moving"
         
@@ -102,6 +125,10 @@ class MoveRobot(Node):
             elif self.chosenDirection[0] == "Right":
                 angleToMovement = math.atan2( self.movementGoalY - self.odom_msg.pose.pose.position.y , self.movementGoalX - self.odom_msg.pose.pose.position.x)
                 distanceToMovement = math.sqrt( (self.movementGoalX - self.odom_msg.pose.pose.position.x)**2 + (self.movementGoalY - self.odom_msg.pose.pose.position.y)**2)
+            
+            elif self.chosenDirection[0] == "Back":
+                angleToMovement = math.atan2( self.movementGoalY - self.odom_msg.pose.pose.position.y , self.movementGoalX - self.odom_msg.pose.pose.position.x)
+                distanceToMovement = math.sqrt( (self.movementGoalX - self.odom_msg.pose.pose.position.x)**2 + (self.movementGoalY - self.odom_msg.pose.pose.position.y)**2)
 
 
             orientation = self.odom_msg.pose.pose.orientation
@@ -115,9 +142,9 @@ class MoveRobot(Node):
             angleDifference  = abs(yaw - angleToMovement)
 
             #Movement Parameters
-            turningSpeed = 1
-            drivingSpeed = 1
-            angleAccuracy = 0.1
+            turningSpeed = 0.5
+            drivingSpeed = 3
+            angleAccuracy = 0.05
             distanceAccuracy = 0.1
 
             #Turn to face goal
@@ -142,10 +169,17 @@ class MoveRobot(Node):
 
             #self.get_logger().info(f"Chosen Direction: {self.chosenDirection[0]} Distance to Goal: {self.chosenDirection[1]} Distance to Obstacle: {self.chosenDirection[2]} Angle to Movement: {angleToMovement} Yaw: {yaw} Angle Difference: {angleDifference}") 
             
-            self.get_logger().info(f"State {self.state} Distance to Movement {distanceToMovement} Angle to Movement {angleToMovement} Yaw {yaw} Angle Difference {angleDifference}")
+            #self.get_logger().info(f"State {self.state} Distance to Movement {distanceToMovement} Angle to Movement {angleToMovement} Yaw {yaw} Angle Difference {angleDifference}")
 
 
             self.publisher.publish(movement)
+        
+    def checkPreviousPositions(self, position):
+        accuracy = 0.1
+        for pos in self.positionsVisited:
+            if position[0] < pos[0] + accuracy and position[0] > pos[0] - accuracy and position[1] < pos[1] + accuracy and position[1] > pos[1] - accuracy:
+                return True
+        return False
 
 
 
@@ -177,6 +211,7 @@ class MoveRobot(Node):
 
 
 def main():
+
     rclpy.init()
     node = MoveRobot()
     rclpy.spin(node)

@@ -27,8 +27,8 @@ class MoveRobot(Node):
         self.odom_msg = msg
 
     def move_forward(self):       
-        goalx = 0
-        goaly = 2
+        goalx = 1.5
+        goaly = 1.5
         movement = Twist()
         
         #Get distance to goal
