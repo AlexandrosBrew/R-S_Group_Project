@@ -27,6 +27,7 @@ setup(
     entry_points={
         'console_scripts': [
             'move_robot = GazeboRobotSim.move_robot:main',
+            'move_robot2 = GazeboRobotSim.move_robot2:main',
             'test_gazebo = GazeboRobotSim.test_gazebo:main',
         ],
     },
