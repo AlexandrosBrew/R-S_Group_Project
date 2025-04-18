@@ -1,25 +1,30 @@
-Launch gazebo with - 
-ros2 launch gazebo_ros gazebo.launch.py
+Running the world -
+ros2 launch GazeboRobotSim launch_task1.py
+  ros2 launch GazeboRobotSim launch_task2.py
 
-Spawn Robots with e.g. - 
-ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
 
-ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/Documents/Group\ Project/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf
+Spawn Robots  - 
+#For task 1, spawning robot at -2, 1
+ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf -x -2 -y 1
 
-Sourcing - 
-source  ~/R-S_Group_Project/ros2_ws/install/setup.bash
+#For task 2, spawning robot at -1.5, 1
+ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf -x -1.5 -y 1
+
+
+
 
 Rebuilding - 
 cd ~/R-S_Group_Project/ros2_ws
 colcon build --packages-select GazeboRobotSim
 source install/setup.bash
 
-
-Running Scripts -
+Running Ros2 Scripts -
 ros2 run GazeboRobotSim move_robot
 
-Running the world -
-ros2 launch GazeboRobotSim launch.py
+
+Helper Scripts - 
+chmod +x rebuild.sh
+./rebuild.sh
 
 
 Hokuyo Sensor Settings
