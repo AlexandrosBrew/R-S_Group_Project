@@ -1,4 +1,5 @@
 from launch import LaunchDescription
+from launch_ros.actions import Node
 from launch.actions import ExecuteProcess
 import os
 
@@ -9,8 +10,9 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        # Start Gazebo with ROS integration
         ExecuteProcess(
-            cmd=['gazebo', '--verbose', world_path],
+            cmd=['gazebo', '--verbose', world_path, '-s', 'libgazebo_ros_factory.so'],
             output='screen'
         )
     ])
