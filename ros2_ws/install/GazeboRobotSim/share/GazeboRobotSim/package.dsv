@@ -1,6 +1,0 @@
-source;share/GazeboRobotSim/hook/pythonpath.ps1
-source;share/GazeboRobotSim/hook/pythonpath.dsv
-source;share/GazeboRobotSim/hook/pythonpath.sh
-source;share/GazeboRobotSim/hook/ament_prefix_path.ps1
-source;share/GazeboRobotSim/hook/ament_prefix_path.dsv
-source;share/GazeboRobotSim/hook/ament_prefix_path.sh

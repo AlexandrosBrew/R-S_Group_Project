@@ -1,5 +1,0 @@
-  File "/home/dimithri/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim/move_robot.py", line 59
-    (laserArray.ranges[])
-     ^^^^^^^^^^^^^^^^^^^
-SyntaxError: f-string: invalid syntax. Perhaps you forgot a comma?
-
