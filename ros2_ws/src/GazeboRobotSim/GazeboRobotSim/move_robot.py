@@ -45,7 +45,7 @@ class MoveRobot(Node):
 
         #Movement Parameters
         turningSpeed = 0.3
-        drivingSpeed = 0.5
+        drivingSpeed = 0.2
         angleAccuracy = self.laser_msg.angle_increment
         distanceAccuracy = 0.1
 
