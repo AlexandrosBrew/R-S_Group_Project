@@ -71,18 +71,31 @@ class MoveRobot(Node):
         detectionRange = 50
         closestFreeAngle = "N/A"
 
-        blockedRays = 0
-        for i in range(0,detectionRange):
-            if laserArray[middleIndex - i] < detectionDistance or laserArray[middleIndex + i] < detectionDistance:
-                obstacleDetected = True
+        blockedRays=0
+        for i in range(0,180):
+            if laserArray[i] < detectionDistance:
                 blockedRays += 1
+
+            if i<detectionRange:
+                if laserArray[middleIndex - i] < detectionDistance or laserArray[middleIndex + i] < detectionDistance:
+                    obstacleDetected = True
         
-        if (blockedRays >= 135):
+        vx = self.odom_msg.twist.twist.linear.x
+        vy = self.odom_msg.twist.twist.linear.y
+
+        current_speed = math.sqrt(vx**2 + vy**2)
+
+        
+        if (blockedRays >= 135 and current_speed < 0.05) and not self.turnAround:
+            self.get_logger().info(f"Robot is stuck with {blockedRays} blocked rays")
+            self.turnAroundDegree = (yaw + math.pi) % (2 * math.pi)
             self.turnAround = True
 
         if self.turnAround:
-            self.turnAroundDegree = (yaw + math.pi) % (2 * math.pi)
-            angle_diff = abs(yaw - self.turnTargetYaw)
+
+            self.get_logger().info(f"Turning around to {self.turnAroundDegree} degrees from {yaw} degrees")
+
+            angle_diff = abs(yaw - self.turnAroundDegree)
 
             # Normalize angle_diff in case it wraps around 2π
             if angle_diff > math.pi:
@@ -92,15 +105,15 @@ class MoveRobot(Node):
 
             if angle_diff > 0.05:  # Not facing target yet
                 movement = Twist()
+                movement.linear.x = 0.0
                 movement.angular.z = turningSpeed
                 self.publisher.publish(movement)
             else:
+                self.get_logger().info("Turned around")
                 self.turnAround = False
-                self.turnAround = False  # Reset
-                self.get_logger().info("Completed turn.")
 
         
-        if not self.turnAround:
+        else:
 
 
             if obstacleDetected:
@@ -124,7 +137,7 @@ class MoveRobot(Node):
                         break
             
             
-            self.get_logger().info(f"Obstacle Detected: {obstacleDetected} ClosestFreeAngle {closestFreeAngle} Angle to Goal: {angleToGoal} Yaw: {yaw} rayAngleIncrement: {rayAngleIncrement}")
+            #self.get_logger().info(f"Obstacle Detected: {obstacleDetected} ClosestFreeAngle {closestFreeAngle} Angle to Goal: {angleToGoal} Yaw: {yaw} rayAngleIncrement: {rayAngleIncrement}")
             
 
             angleDifference  = abs(yaw - angleToGoal)
