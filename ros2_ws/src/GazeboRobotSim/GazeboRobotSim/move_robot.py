@@ -20,6 +20,9 @@ class MoveRobot(Node):
 
         self.move_forward_timer = self.create_timer(0.1, self.move_forward)
 
+        self.turnAround = False
+        self.turnAroundDegree = 0.0
+
     def laser_callback(self, msg):
         self.laser_msg = msg
 
@@ -68,61 +71,88 @@ class MoveRobot(Node):
         detectionRange = 50
         closestFreeAngle = "N/A"
 
+        blockedRays = 0
         for i in range(0,detectionRange):
             if laserArray[middleIndex - i] < detectionDistance or laserArray[middleIndex + i] < detectionDistance:
                 obstacleDetected = True
-                break
+                blockedRays += 1
         
-        if obstacleDetected:
-            angleToGoal = yaw
+        if (blockedRays >= 135):
+            self.turnAround = True
 
-            for i in range(1,(len(laserArray)//2)-detectionRange):
+        if self.turnAround:
+            self.turnAroundDegree = (yaw + math.pi) % (2 * math.pi)
+            angle_diff = abs(yaw - self.turnTargetYaw)
 
-                #Move to the left
-                if laserArray[middleIndex - (i+detectionRange)] > detectionDistance:
-                    closestFreeAngle = str(middleIndex - (i+detectionRange))
-                    angleToGoal += rayAngleIncrement*(i+detectionRange)
-                    while angleToGoal > 2*math.pi:
-                        angleToGoal -= 2*math.pi
-                    break
-                #Move to the right
-                if laserArray[middleIndex + (i+detectionRange)] > detectionDistance:
-                    closestFreeAngle = str(middleIndex + (i+detectionRange))
-                    angleToGoal -= rayAngleIncrement*(i+detectionRange)
-                    while angleToGoal < 0:
-                        angleToGoal += 2*math.pi
-                    break
-        
-        
-        self.get_logger().info(f"Obstacle Detected: {obstacleDetected} ClosestFreeAngle {closestFreeAngle} Angle to Goal: {angleToGoal} Yaw: {yaw} rayAngleIncrement: {rayAngleIncrement}")
-        
+            # Normalize angle_diff in case it wraps around 2π
+            if angle_diff > math.pi:
+                angle_diff = 2 * math.pi - angle_diff
 
-        angleDifference  = abs(yaw - angleToGoal)
+            turningSpeed = 0.2  # Adjust as needed
 
-        if yaw < angleToGoal:
-            movement.angular.z = float(turningSpeed * angleDifference *-1)
-            currentAngular = float(turningSpeed * angleDifference *-1)
-
-            message = "Turning"
-        elif yaw > angleToGoal:
-            movement.angular.z = float(turningSpeed * angleDifference)
-            currentAngular = float(turningSpeed * angleDifference)
-            message = "Turning"
-
-        else:
-            movement.angular.z = 0.0
-            currentAngular = 0.0
-            message = "Aligned"
-
-        if distanceToGoal > distanceAccuracy and not obstacleDetected:
-            movement.linear.x = float(drivingSpeed*distanceToGoal*-1) #Robot moving in reverse as it is facing the wrong way
-        elif not obstacleDetected:
-            movement.linear.x = 0.0
-            message = "At Goal"
+            if angle_diff > 0.05:  # Not facing target yet
+                movement = Twist()
+                movement.angular.z = turningSpeed
+                self.publisher.publish(movement)
+            else:
+                self.turnAround = False
+                self.turnAround = False  # Reset
+                self.get_logger().info("Completed turn.")
 
         
+        if not self.turnAround:
+
+
+            if obstacleDetected:
+                angleToGoal = yaw
+
+                for i in range(1,(len(laserArray)//2)-detectionRange):
+
+                    #Move to the left
+                    if laserArray[middleIndex - (i+detectionRange)] > detectionDistance:
+                        closestFreeAngle = str(middleIndex - (i+detectionRange))
+                        angleToGoal += rayAngleIncrement*(i+detectionRange)
+                        while angleToGoal > 2*math.pi:
+                            angleToGoal -= 2*math.pi
+                        break
+                    #Move to the right
+                    if laserArray[middleIndex + (i+detectionRange)] > detectionDistance:
+                        closestFreeAngle = str(middleIndex + (i+detectionRange))
+                        angleToGoal -= rayAngleIncrement*(i+detectionRange)
+                        while angleToGoal < 0:
+                            angleToGoal += 2*math.pi
+                        break
             
-        self.publisher.publish(movement)
+            
+            self.get_logger().info(f"Obstacle Detected: {obstacleDetected} ClosestFreeAngle {closestFreeAngle} Angle to Goal: {angleToGoal} Yaw: {yaw} rayAngleIncrement: {rayAngleIncrement}")
+            
+
+            angleDifference  = abs(yaw - angleToGoal)
+
+            if yaw < angleToGoal:
+                movement.angular.z = float(turningSpeed * angleDifference *-1)
+                currentAngular = float(turningSpeed * angleDifference *-1)
+
+                message = "Turning"
+            elif yaw > angleToGoal:
+                movement.angular.z = float(turningSpeed * angleDifference)
+                currentAngular = float(turningSpeed * angleDifference)
+                message = "Turning"
+
+            else:
+                movement.angular.z = 0.0
+                currentAngular = 0.0
+                message = "Aligned"
+
+            if distanceToGoal > distanceAccuracy: #and not obstacleDetected:
+                movement.linear.x = float(drivingSpeed*distanceToGoal*-1) #Robot moving in reverse as it is facing the wrong way
+            elif not obstacleDetected:
+                movement.linear.x = 0.0
+                message = "At Goal"
+
+            
+                
+            self.publisher.publish(movement)
     
 
 
