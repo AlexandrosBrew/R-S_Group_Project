@@ -7,7 +7,7 @@ from std_msgs.msg import String
 from sensor_msgs.msg import LaserScan
 import math
 import array
-
+import time
 class MoveRobot(Node):
     def __init__(self):
         super().__init__('move_robot')
@@ -22,6 +22,9 @@ class MoveRobot(Node):
 
         self.turnAround = False
         self.turnAroundDegree = 0.0
+
+        self.stuckTimer = time.time()
+        self.stuckBool = False
 
     def laser_callback(self, msg):
         self.laser_msg = msg
@@ -47,7 +50,7 @@ class MoveRobot(Node):
         angleToGoal += math.pi
 
         #Movement Parameters
-        turningSpeed = 0.3
+        turningSpeed = 0.5
         drivingSpeed = 0.2
         angleAccuracy = self.laser_msg.angle_increment
         distanceAccuracy = 0.1
@@ -85,6 +88,19 @@ class MoveRobot(Node):
 
         current_speed = math.sqrt(vx**2 + vy**2)
 
+        if current_speed < 0.05:
+            if self.stuckBool == False:
+                self.stuckBool = True
+                self.stuckTimer = time.time()
+            
+            if (time.time() - self.stuckTimer) > 10:
+                self.turnAround = True
+        
+        else:
+            self.stuckTimer = time.time()
+            self.turnAround = False
+
+
         
         if (blockedRays >= 135 and current_speed < 0.05) and not self.turnAround:
             self.get_logger().info(f"Robot is stuck with {blockedRays} blocked rays")
@@ -93,29 +109,31 @@ class MoveRobot(Node):
 
         if self.turnAround:
 
-            self.get_logger().info(f"Turning around to {self.turnAroundDegree} degrees from {yaw} degrees")
-
-            angle_diff = abs(yaw - self.turnAroundDegree)
-
-            # Normalize angle_diff in case it wraps around 2π
-            if angle_diff > math.pi:
-                angle_diff = 2 * math.pi - angle_diff
-
-            turningSpeed = 0.2  # Adjust as needed
-
-            if angle_diff > 0.05:  # Not facing target yet
-                movement = Twist()
-                movement.linear.x = 0.0
-                movement.angular.z = turningSpeed
-                self.publisher.publish(movement)
-            else:
-                self.get_logger().info("Turned around")
+            if blockedRays < 135:
                 self.turnAround = False
+                
+            else:
+                self.get_logger().info(f"Turning around to {self.turnAroundDegree} degrees from {yaw} degrees")
+
+                angle_diff = abs(yaw - self.turnAroundDegree)
+
+                # Normalize angle_diff in case it wraps around 2π
+                if angle_diff > math.pi:
+                    angle_diff = 2 * math.pi - angle_diff
+
+                turningSpeed = 0.2  # Adjust as needed
+
+                if angle_diff > 0.05:  # Not facing target yet
+                    movement = Twist()
+                    movement.linear.x = 0.0
+                    movement.angular.z = turningSpeed
+                    self.publisher.publish(movement)
+                else:
+                    self.get_logger().info("Turned around")
+                    self.turnAround = False
 
         
         else:
-
-
             if obstacleDetected:
                 angleToGoal = yaw
 
