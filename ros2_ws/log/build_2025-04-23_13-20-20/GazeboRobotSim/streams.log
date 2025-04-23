@@ -1,0 +1,55 @@
+[0.990s] Invoking command in '/home/abrew/R-S_Group_Project/ros2_ws/src/GazeboRobotSim': PYTHONPATH=/home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/GazeboRobotSim build --build-base /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build install --record /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/install.log --single-version-externally-managed install_data
+[1.264s] running egg_info
+[1.264s] creating ../../build/GazeboRobotSim/GazeboRobotSim.egg-info
+[1.265s] writing ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/PKG-INFO
+[1.265s] writing dependency_links to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/dependency_links.txt
+[1.266s] writing entry points to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/entry_points.txt
+[1.266s] writing requirements to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/requires.txt
+[1.266s] writing top-level names to ../../build/GazeboRobotSim/GazeboRobotSim.egg-info/top_level.txt
+[1.266s] writing manifest file '../../build/GazeboRobotSim/GazeboRobotSim.egg-info/SOURCES.txt'
+[1.268s] reading manifest file '../../build/GazeboRobotSim/GazeboRobotSim.egg-info/SOURCES.txt'
+[1.269s] writing manifest file '../../build/GazeboRobotSim/GazeboRobotSim.egg-info/SOURCES.txt'
+[1.269s] running build
+[1.269s] running build_py
+[1.270s] creating /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build
+[1.270s] creating /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib
+[1.270s] creating /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim
+[1.270s] copying GazeboRobotSim/move_robot.py -> /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim
+[1.270s] copying GazeboRobotSim/test_gazebo.py -> /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim
+[1.270s] copying GazeboRobotSim/move_robot2.py -> /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim
+[1.271s] copying GazeboRobotSim/__init__.py -> /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim
+[1.271s] running install
+[1.271s] running install_lib
+[1.272s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim
+[1.272s] copying /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim/move_robot.py -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim
+[1.272s] copying /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim/test_gazebo.py -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim
+[1.273s] copying /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim/move_robot2.py -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim
+[1.273s] copying /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build/lib/GazeboRobotSim/__init__.py -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim
+[1.273s] byte-compiling /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim/move_robot.py to move_robot.cpython-310.pyc
+[1.275s] byte-compiling /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim/test_gazebo.py to test_gazebo.cpython-310.pyc
+[1.275s] byte-compiling /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim/move_robot2.py to move_robot2.cpython-310.pyc
+[1.277s] byte-compiling /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim/__init__.py to __init__.cpython-310.pyc
+[1.277s] running install_data
+[1.277s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/ament_index
+[1.278s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/ament_index/resource_index
+[1.278s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/ament_index/resource_index/packages
+[1.278s] copying resource/GazeboRobotSim -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/ament_index/resource_index/packages
+[1.278s] copying package.xml -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim
+[1.278s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/launch
+[1.278s] copying launch/launch_task1.py -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/launch
+[1.278s] copying launch/launch_task2.py -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/launch
+[1.279s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models
+[1.279s] copying models/robotTask1.sdf -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models
+[1.279s] copying models/robotTask1.config -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models
+[1.279s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/scripts
+[1.279s] creating /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/worlds
+[1.280s] copying worlds/task2.world -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/worlds
+[1.280s] copying worlds/task1.world -> /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/worlds
+[1.280s] running install_egg_info
+[1.281s] Copying ../../build/GazeboRobotSim/GazeboRobotSim.egg-info to /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages/GazeboRobotSim-0.0.0-py3.10.egg-info
+[1.282s] running install_scripts
+[1.308s] Installing move_robot script to /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/GazeboRobotSim
+[1.308s] Installing move_robot2 script to /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/GazeboRobotSim
+[1.308s] Installing test_gazebo script to /home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/GazeboRobotSim
+[1.309s] writing list of installed files to '/home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/install.log'
+[1.340s] Invoked command in '/home/abrew/R-S_Group_Project/ros2_ws/src/GazeboRobotSim' returned '0': PYTHONPATH=/home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/abrew/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/GazeboRobotSim build --build-base /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/build install --record /home/abrew/R-S_Group_Project/ros2_ws/build/GazeboRobotSim/install.log --single-version-externally-managed install_data
