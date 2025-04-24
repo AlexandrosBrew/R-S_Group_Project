@@ -1,6 +1,7 @@
 Running the world -
 ros2 launch GazeboRobotSim launch_task1.py
 ros2 launch GazeboRobotSim launch_task2.py
+ros2 launch GazeboRobotSim launch_task3.py
 
 
 Spawn Robots  - 
