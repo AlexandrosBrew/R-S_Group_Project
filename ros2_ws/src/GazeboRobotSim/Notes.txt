@@ -11,6 +11,12 @@ ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/R-S_Group_Project
 #For task 2, spawning robot at -1.5, 1.225
 ros2 run gazebo_ros spawn_entity.py -entity robotTask1 -file ~/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotTask1.sdf -x -1.5 -y 1.225
 
+#For task 1, spawning robot at -2, 1
+ros2 run gazebo_ros spawn_entity.py -entity robotWithWings -file ~/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotWithWings.sdf -x -2 -y 1
+
+#For task 2, spawning robot at -1.5, 1.225
+ros2 run gazebo_ros spawn_entity.py -entity robotWithWings -file ~/R-S_Group_Project/ros2_ws/install/GazeboRobotSim/share/GazeboRobotSim/models/robotWithWings.sdf -x -1.5 -y 1.225
+
 
 
 

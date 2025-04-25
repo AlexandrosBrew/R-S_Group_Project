@@ -51,7 +51,7 @@ class MoveRobot(Node):
 
         #Movement Parameters
         turningSpeed = 0.5
-        drivingSpeed = 0.2
+        drivingSpeed = 0.3
         angleAccuracy = self.laser_msg.angle_increment
         distanceAccuracy = 0.1
 
@@ -71,10 +71,13 @@ class MoveRobot(Node):
 
         obstacleDetected = False
         detectionDistance = 0.3
+        criticalDetectionDistance = 0.2
         detectionRange = 50
+        criticalDetectionRange = 5
         closestFreeAngle = "N/A"
 
         blockedRays=0
+        criticalDetection = False
         for i in range(0,180):
             if laserArray[i] < detectionDistance:
                 blockedRays += 1
@@ -82,24 +85,30 @@ class MoveRobot(Node):
             if i<detectionRange:
                 if laserArray[middleIndex - i] < detectionDistance or laserArray[middleIndex + i] < detectionDistance:
                     obstacleDetected = True
+            if i<criticalDetectionRange:
+                if laserArray[middleIndex - i] < criticalDetectionDistance or laserArray[middleIndex + i] < criticalDetectionDistance:
+                    criticalDetection = True
         
         vx = self.odom_msg.twist.twist.linear.x
         vy = self.odom_msg.twist.twist.linear.y
 
         current_speed = math.sqrt(vx**2 + vy**2)
+        
+        if criticalDetection:
+            turningSpeed+=0.5
 
-        if current_speed < 0.05:
+        if current_speed < 0.03 :
             if self.stuckBool == False:
                 self.stuckBool = True
                 self.stuckTimer = time.time()
             
-            if (time.time() - self.stuckTimer) > 10:
+            if (time.time() - self.stuckTimer) > 10 :
                 self.turnAround = True
+                self.stuckTimer = time.time()
         
         else:
             self.stuckTimer = time.time()
-            self.turnAround = False
-
+            self.stuckBool = False
 
         
         if (blockedRays >= 135 and current_speed < 0.05) and not self.turnAround:
@@ -108,55 +117,58 @@ class MoveRobot(Node):
             self.turnAround = True
 
         if self.turnAround:
-
-            if blockedRays < 135:
-                self.turnAround = False
+            # if blockedRays < 90:
+            #     self.turnAround = False
+            #     self.stuckBool = False
                 
+            # else:
+            self.get_logger().info(f"Turning around to {self.turnAroundDegree} degrees from {yaw} degrees")
+
+            angle_diff = abs(yaw - self.turnAroundDegree)
+
+            # Normalize angle_diff in case it wraps around 2π
+            if angle_diff > math.pi:
+                angle_diff = 2 * math.pi - angle_diff
+
+            turningSpeed = 0.2  # Adjust as needed
+
+            if angle_diff > 0.05:  # Not facing target yet
+                movement = Twist()
+                movement.linear.x = 0.0
+                movement.angular.z = turningSpeed
+                #self.publisher.publish(movement)
             else:
-                self.get_logger().info(f"Turning around to {self.turnAroundDegree} degrees from {yaw} degrees")
-
-                angle_diff = abs(yaw - self.turnAroundDegree)
-
-                # Normalize angle_diff in case it wraps around 2π
-                if angle_diff > math.pi:
-                    angle_diff = 2 * math.pi - angle_diff
-
-                turningSpeed = 0.2  # Adjust as needed
-
-                if angle_diff > 0.05:  # Not facing target yet
-                    movement = Twist()
-                    movement.linear.x = 0.0
-                    movement.angular.z = turningSpeed
-                    self.publisher.publish(movement)
-                else:
-                    self.get_logger().info("Turned around")
-                    self.turnAround = False
+                self.get_logger().info("Turned around")
+                self.turnAround = False
 
         
         else:
             if obstacleDetected:
                 angleToGoal = yaw
 
-                for i in range(1,(len(laserArray)//2)-detectionRange):
+                
+                for i in range(1,(len(laserArray)//2-detectionRange)):#-detectionRange):
+                    try:
+                        #Move to the left
+                        if laserArray[middleIndex - (i+detectionRange)] > detectionDistance:
+                            closestFreeAngle = str(middleIndex - (i+detectionRange))
+                            angleToGoal += rayAngleIncrement*(i+detectionRange)
+                            while angleToGoal > 2*math.pi:
+                                angleToGoal -= 2*math.pi
+                            break
+                        #Move to the right
+                        if laserArray[middleIndex + (i+detectionRange)] > detectionDistance:
+                            closestFreeAngle = str(middleIndex + (i+detectionRange))
+                            angleToGoal -= rayAngleIncrement*(i+detectionRange)
+                            while angleToGoal < 0:
+                                angleToGoal += 2*math.pi
+                            break
+                    
+                    except IndexError:
+                        break
+                
 
-                    #Move to the left
-                    if laserArray[middleIndex - (i+detectionRange)] > detectionDistance:
-                        closestFreeAngle = str(middleIndex - (i+detectionRange))
-                        angleToGoal += rayAngleIncrement*(i+detectionRange)
-                        while angleToGoal > 2*math.pi:
-                            angleToGoal -= 2*math.pi
-                        break
-                    #Move to the right
-                    if laserArray[middleIndex + (i+detectionRange)] > detectionDistance:
-                        closestFreeAngle = str(middleIndex + (i+detectionRange))
-                        angleToGoal -= rayAngleIncrement*(i+detectionRange)
-                        while angleToGoal < 0:
-                            angleToGoal += 2*math.pi
-                        break
-            
-            
-            #self.get_logger().info(f"Obstacle Detected: {obstacleDetected} ClosestFreeAngle {closestFreeAngle} Angle to Goal: {angleToGoal} Yaw: {yaw} rayAngleIncrement: {rayAngleIncrement}")
-            
+                    
 
             angleDifference  = abs(yaw - angleToGoal)
 
@@ -175,15 +187,19 @@ class MoveRobot(Node):
                 currentAngular = 0.0
                 message = "Aligned"
 
-            if distanceToGoal > distanceAccuracy: #and not obstacleDetected:
+            if distanceToGoal > distanceAccuracy and not criticalDetection:
+                movement.linear.x = float(drivingSpeed*-1) #Robot moving in reverse as it is facing the wrong way
+
+            elif ((0.5-distanceToGoal) > distanceAccuracy) and not criticalDetection:
                 movement.linear.x = float(drivingSpeed*distanceToGoal*-1) #Robot moving in reverse as it is facing the wrong way
-            elif not obstacleDetected:
+
+            else:#elif not obstacleDetected:
                 movement.linear.x = 0.0
                 message = "At Goal"
 
             
-                
-            self.publisher.publish(movement)
+        self.get_logger().info(f"Distance to goal: {distanceToGoal} Angle to goal: {angleToGoal} Yaw: {yaw} Laser: {laserArray[middleIndex]} Obstacle Detected: {obstacleDetected} Critical Detection: {criticalDetection} Current Speed: {current_speed} TurnAround: {self.turnAround} Stuck Timer: {time.time() - self.stuckTimer}")
+        self.publisher.publish(movement)
     
 
 
