@@ -27,8 +27,7 @@ source install/setup.bash
 
 Running Ros2 Scripts -
 
-##Task3
-ros2 run GazeboRobotSim move_robot --ros-args -p goalx:=1.5 -p goaly:=1.5
+ros2 run GazeboRobotSim move_robot
 
 
 Helper Scripts - 
