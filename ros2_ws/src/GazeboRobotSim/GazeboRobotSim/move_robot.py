@@ -25,7 +25,13 @@ class MoveRobot(Node):
         self.turnAroundDegree = 0.0
 
         self.stuckTimer = time.time() 
-        self.stuckBool = False 
+        self.stuckBool = False
+
+        # Declare and get goal parameters
+        self.declare_parameter('goalx', 1.5)
+        self.declare_parameter('goaly', 1.5)
+        self.goalx = self.get_parameter('goalx').value
+        self.goaly = self.get_parameter('goaly').value
 
     def laser_callback(self, msg):
         self.laser_msg = msg
@@ -35,15 +41,13 @@ class MoveRobot(Node):
 
     def move_forward(self):
         '''Main function controlling robots movemnts and object detection. Publishes robots movements using the publisher variable.'''       
-        goalx = 1.5
-        goaly = 1.5
         movement = Twist()
         
         #Get distance to goal
-        distanceToGoal = math.sqrt( (goalx - self.odom_msg.pose.pose.position.x)**2 + (goaly - self.odom_msg.pose.pose.position.y)**2)
+        distanceToGoal = math.sqrt( (self.goalx - self.odom_msg.pose.pose.position.x)**2 + (self.goaly - self.odom_msg.pose.pose.position.y)**2)
         
         #Get angle to goal
-        angleToGoal = math.atan2( goaly - self.odom_msg.pose.pose.position.y , goalx - self.odom_msg.pose.pose.position.x)        
+        angleToGoal = math.atan2( self.goaly - self.odom_msg.pose.pose.position.y , self.goalx - self.odom_msg.pose.pose.position.x)        
 
         orientation = self.odom_msg.pose.pose.orientation
         yaw = math.atan2(2.0 * (orientation.w*orientation.z + orientation.x*orientation.y), 1.0 - 2.0 * (orientation.y*orientation.y + orientation.z*orientation.z)) #Get yaw angle from quaternion
