@@ -44,13 +44,16 @@ class MoveRobot(Node):
         movement = Twist()
         
         #Get distance to goal
-        distanceToGoal = math.sqrt( (self.goalx - self.odom_msg.pose.pose.position.x)**2 + (self.goaly - self.odom_msg.pose.pose.position.y)**2)
+        distanceToGoal = math.sqrt( (self.goalx - self.odom_msg.pose.pose.position.x)**2 + 
+                                   (self.goaly - self.odom_msg.pose.pose.position.y)**2)
         
         #Get angle to goal
-        angleToGoal = math.atan2( self.goaly - self.odom_msg.pose.pose.position.y , self.goalx - self.odom_msg.pose.pose.position.x)        
+        angleToGoal = math.atan2( self.goaly - self.odom_msg.pose.pose.position.y , 
+                                 self.goalx - self.odom_msg.pose.pose.position.x)        
 
         orientation = self.odom_msg.pose.pose.orientation
-        yaw = math.atan2(2.0 * (orientation.w*orientation.z + orientation.x*orientation.y), 1.0 - 2.0 * (orientation.y*orientation.y + orientation.z*orientation.z)) #Get yaw angle from quaternion
+        yaw = math.atan2(2.0 * (orientation.w*orientation.z + orientation.x*orientation.y), 
+                         1.0 - 2.0 * (orientation.y*orientation.y + orientation.z*orientation.z)) #Get yaw angle from quaternion
         #Adjust yaw and angleToGoal angles to be between 0 and 2pi
         yaw += math.pi
         angleToGoal += math.pi
@@ -92,10 +95,10 @@ class MoveRobot(Node):
                     criticalDetection = True
         
         ### Collision detection and critical obstacle avoidance
-        vx = self.odom_msg.twist.twist.linear.x
-        vy = self.odom_msg.twist.twist.linear.y
+        xVelocity = self.odom_msg.twist.twist.linear.x
+        yVelocity = self.odom_msg.twist.twist.linear.y
 
-        current_speed = math.sqrt(vx**2 + vy**2)
+        current_speed = math.sqrt(xVelocity**2 + yVelocity**2)
         
         if criticalDetection:
             turningSpeed+=0.5 # Increase turning speed incase robot is in risk of collision to avoid.
@@ -181,17 +184,11 @@ class MoveRobot(Node):
 
             if yaw < angleToGoal: # Turn towards goal
                 movement.angular.z = float(turningSpeed * angleDifference *-1)
-                currentAngular = float(turningSpeed * angleDifference *-1)
 
-                message = "Turning"
             elif yaw > angleToGoal: # Turn towrds goal
                 movement.angular.z = float(turningSpeed * angleDifference)
-                currentAngular = float(turningSpeed * angleDifference)
-                message = "Turning"
             else: #Stop turning
                 movement.angular.z = 0.0
-                currentAngular = 0.0
-                message = "Aligned"
 
             if distanceToGoal > distanceAccuracy and not criticalDetection:
                 movement.linear.x = float(drivingSpeed*-1) #Robot moving in reverse as it is facing the wrong way
@@ -201,10 +198,9 @@ class MoveRobot(Node):
 
             else:#elif not obstacleDetected:
                 movement.linear.x = 0.0
-                message = "At Goal"
 
             
-        self.get_logger().info(f"Distance to goal: {distanceToGoal} Angle to goal: {angleToGoal} Yaw: {yaw} Laser: {laserArray[middleIndex]} Obstacle Detected: {obstacleDetected} Critical Detection: {criticalDetection} Current Speed: {current_speed} TurnAround: {self.turnAround} Stuck Timer: {time.time() - self.stuckTimer}")
+        #self.get_logger().info(f"Distance to goal: {distanceToGoal} Angle to goal: {angleToGoal} Yaw: {yaw} Laser: {laserArray[middleIndex]} Obstacle Detected: {obstacleDetected} Critical Detection: {criticalDetection} Current Speed: {current_speed} TurnAround: {self.turnAround} Stuck Timer: {time.time() - self.stuckTimer}")
         self.publisher.publish(movement) # Publish the current twist movements to the robot.
     
 
