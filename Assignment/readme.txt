@@ -1,6 +1,6 @@
 Welcome to our Group ROS2 Gazebo Project
 
-________Instructions________
+_____________Instructions_____________
 
 Run each step in a new Ubuntu Terminal
 
@@ -10,7 +10,7 @@ Run each step in a new Ubuntu Terminal
 4. Execute run file move_robot
 
 All commands are found below
-_____________________________
+______________________________________
 
 
 Building - 
@@ -58,10 +58,10 @@ Hokuyo Sensor Settings  -- In case sensor does not spawn correctly.
 			<output_type>sensor_msgs/LaserScan</output_type>
 			<frameName>/hokuyo_link</frameName>
 		</plugin>
-        <always_on>1</always_on>
-        <update_rate>30</update_rate>
-        <visualize>true</visualize>
-      </sensor>
+    <always_on>1</always_on>
+    <update_rate>30</update_rate>
+    <visualize>true</visualize>
+</sensor>
         
         
 <plugin name="laser" filename="libgazebo_ros_ray_sensor.so">
