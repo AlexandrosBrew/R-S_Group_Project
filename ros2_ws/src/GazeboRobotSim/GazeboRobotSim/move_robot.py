@@ -120,6 +120,17 @@ class MoveRobot(Node):
             self.turnAround = True
 
         if self.turnAround: # Adjust robots angular speed so robot matches desired angle
+            
+            if blockedRays < 135:
+                self.get_logger().info(f"Robot is no longer stuck with {blockedRays} blocked rays")
+                self.turnAround = False
+                self.stuckTimer = time.time()
+                movement.angular.z = 0.0
+                movement.linear.x = 0.0
+                self.get_logger().info("Turned around")
+
+
+
             self.get_logger().info(f"Turning around to {self.turnAroundDegree} degrees from {yaw} degrees")
 
             angle_diff = abs(yaw - self.turnAroundDegree)
