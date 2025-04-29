@@ -2351,7 +2351,6 @@
         </link>
       </model>
       <model name='unit_box'>
-        <static>true</static>
         <pose>0.598568 2.20879 0.56 -1e-05 0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
